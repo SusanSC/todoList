@@ -1,0 +1,39 @@
+<!-- this is my base template to create all my to do lists%> -->
+
+<!-- This code is to include the same footer and header across all my web site using EJS Layout/Partials -->
+<%- include("header") -%>
+
+<div class="box" id="heading">
+  <!-- *****PASS A VARIABLE VALUE FROM JAVASCRIPT TO HTML FILE****-->
+  <!-- < %= kindOfDay %> (no space) : This is a marker that tells the file to replace whatever is inside here with the value of the variable  -->
+  <h1> <%= listTitle %> </h1>
+</div>
+
+<div class="box">
+  <!-- The tag < %  (no space) is a 'Scriptlet' tag, and its used ONLY for control-flow (loops, if, switch), which is not part of the HTML code. (it goes in line by line) -->
+  <!-- This loop creates a new line for each item inside the array newListItems, this way they dont go in the same line all together -->
+  <% newListItems.forEach(item => { %>
+  <!-- Since we want to send data when this checkbox gets clicked because we need to delete the checked item, we need another form and post route.  -->
+  <!-- Also we need to specify a different route from the form below, because that one is responsible for adding new items and this one has to be responsible for deleting items. -->
+  <form action="/delete" method="post">
+    <div class="item">
+      <!-- The submit button is responsible for sending all the data inside the form and make the post request to the required route. Since we dont want to add a button here, we do it through  the checkbox attribute onChange -->
+      <!-- Here I add a value to the checkbox input to bind the item ID to the value of each of the checkboxes, and when it gets checked I can submit this form and find out which item was actually checked off to delete it-->
+      <input type="checkbox" name="checkbox" value="<%= item._id %>" onChange="this.form.submit()">
+      <p><%= item.name %></p>
+    </div>
+    <!-- This input is hidden and cannot be seen by the user. This second input is needed in order to be able to pass back the value of the list name to my app.js (the other input had the value attribute already being used for the item id.). This way we can delete items in the corresponding custom list -->
+    <input type="hidden" name="listName" value="<%= listTitle %>">
+  </form>
+
+  <% }); %>
+
+  <form class="item" action="/" method="post">
+    <input type="text" name="newTask" placeholder="New Item" autocomplete="off">
+    <!-- Here we have to add a name and a value to the button to pass back to my app.js the current list that is being displayed, that way we can difference whether the new item is created inside a custom list or the default list-->
+    <button type="submit" name="list" value=<%= listTitle %>>+</button>
+  </form>
+
+</div>
+
+<%- include("footer") -%>
